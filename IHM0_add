@@ -1,0 +1,23 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.mycompany.ihm0;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+/**
+ *
+ * @author simou
+ */
+public class IHM0_add implements ActionListener  {
+   
+     public IHM0_add(String name){
+         this.z=name;
+         
+     }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      System.out.print(this.z);
+    }
+    private String z;
+}
