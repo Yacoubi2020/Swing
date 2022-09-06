@@ -22,7 +22,7 @@ import javax.swing.table.DefaultTableModel;
  * @author simou
  */
 public class app2 extends javax.swing.JFrame {
-    DefaultTableModel TabModel,TabModel2;
+    DefaultTableModel TabModel,TabModel2,TabModel3,TabModel4;
     static  String username="root";
     static String passwd="";
    static  String conc="jdbc:mysql://localhost/simou";
@@ -33,18 +33,17 @@ public class app2 extends javax.swing.JFrame {
      * Creates new form app2
      */
     public app2() {
-        
         initComponents();
         setVisible(true);
      
         addPlanceholderStyle(jTextField1);
         addPlanceholderStyle(jPasswordField1);
         addPlanceholderStyle(jTextField2);
- 
         addPlanceholderStyle(jPasswordField2);
-          addPlanceholderStyle(jTextField3);
-          ReadData("controleacce");
-        
+        addPlanceholderStyle(jTextField3);
+        addPlanceholderStyle(jTextField4);
+      //  AffichData("controleacce");
+                
         
         //connectionDB();
        // CreateTable("controleAcce");
@@ -114,7 +113,7 @@ public class app2 extends javax.swing.JFrame {
              e.printStackTrace();
          }
      }
-     public void ReadData(String tableName){
+     public void AffichData(String tableName){
          try{
              cnxDB=connectionDB();
              String sql ="select nom,Prenom,gmail from "+tableName;
@@ -130,17 +129,45 @@ public class app2 extends javax.swing.JFrame {
                         data[0]=No;  
                         data[1]=Pre;
                         data[2]=Gma;
-                        System.out.print("Nom ="+No);
+                       // System.out.print("Nom ="+No);
                         TabModel2.addRow(data);
-                        
-                    }
-             
-              
+                       
+                    }              
          }
          catch(SQLException e){
              e.printStackTrace();
          }
         
+     }
+     public void recuperDATA(String tableName){
+     try{
+             cnxDB=connectionDB();
+             String sql ="select nom,Prenom,gmail from "+tableName+" where concat(nom,' ',prenom) like"+"\""+"%"+ValueChercher+"%"+"\"";
+             createST=cnxDB.createStatement();
+             Result=createST.executeQuery(sql);
+              String[] DATA =new String[3];
+              TabModel3=(DefaultTableModel) jTable1.getModel();
+             TabModel3.setRowCount(0);
+              while(Result.next()){
+                 String nom=Result.getString("nom");
+                 String Prenom=Result.getString("Prenom");
+                 String gmail=Result.getString("gmail");
+                DATA[0]=nom;
+                DATA[1]=Prenom;
+                DATA[2]=gmail;
+                
+                TabModel3.addRow(DATA);
+                 }
+            
+            
+     
+      
+      
+      }
+     
+     catch(SQLException e ){
+         e.printStackTrace();
+     }
      }
      public void addPlanceholderStyle(JTextField txt){
          Font font=txt.getFont();
@@ -175,8 +202,16 @@ public class app2 extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jButton2 = new javax.swing.JButton();
+        jTextField4 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+                formWindowGainedFocus(evt);
+            }
+            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+            }
+        });
 
         jTextField1.setBackground(new java.awt.Color(255, 204, 204));
         jTextField1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -310,51 +345,72 @@ public class app2 extends javax.swing.JFrame {
             }
         });
 
+        jTextField4.setText("Chercher");
+        jTextField4.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jTextField4FocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextField4FocusLost(evt);
+            }
+        });
+        jTextField4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(81, 81, 81)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
-                        .addComponent(jPasswordField1)
-                        .addComponent(jPasswordField2)
-                        .addComponent(jTextField2)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(145, 145, 145))))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jTextField3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jPasswordField1)
+                            .addComponent(jPasswordField2, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)))
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(12, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(113, 113, 113)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(168, 168, 168))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(152, 152, 152))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(21, 21, 21)
+                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPasswordField2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(22, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGap(1, 1, 1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(104, Short.MAX_VALUE))
         );
 
         pack();
@@ -506,6 +562,43 @@ public class app2 extends javax.swing.JFrame {
 
     }                                    
 
+    private void jTextField4FocusLost(java.awt.event.FocusEvent evt) {                                      
+        // TODO add your handling code here:
+        if(jTextField4.getText().length()==0){
+         addPlanceholderStyle(jTextField4);
+         jTextField4.setText("Chercher");
+         TabModel4=(DefaultTableModel) jTable1.getModel() ;
+         TabModel4.setRowCount(0);
+         AffichData("controleacce");
+        
+        
+        }
+    }                                     
+
+    private void jTextField4FocusGained(java.awt.event.FocusEvent evt) {                                        
+        // TODO add your handling code here:
+        if(jTextField4.getText().equals("Chercher")){
+         
+         jTextField4.setText(null);
+         jTextField4.requestFocus();
+         removePlanceholderStyle(jTextField4);
+         
+     }
+    }                                       
+
+    private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {                                       
+        // TODO add your handling code here:
+        this.requestFocus();
+    }                                      
+
+    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {                                            
+        // TODO add your handling code here:
+         ValueChercher =jTextField4.getText();
+         //jTable1.removeAll();
+         recuperDATA("controleacce");
+        
+    }                                           
+
     /**
      * @param args the command line arguments
      */
@@ -521,6 +614,7 @@ public class app2 extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextField4;
     // End of variables declaration                   
     static  String nom;
    static  String Prenom;
@@ -530,4 +624,5 @@ public class app2 extends javax.swing.JFrame {
     int IndexRow;
     int IndexColn;
     String selectGmail;
+    String ValueChercher;
 }
