@@ -20,7 +20,7 @@ import javax.swing.JOptionPane;
  */
 public class note extends javax.swing.JFrame implements DB{
 
-    DefaultTableModel Model,Model2,Model3,Model4,Model5;
+    DefaultTableModel Model,Model2,Model3,Model4,Model5,Model6;
     Statement CreatST;
     Connection Cnx;
     ResultSet Result;
@@ -185,6 +185,9 @@ public class note extends javax.swing.JFrame implements DB{
         jTextField4.setBounds(129, 159, 71, 22);
 
         jTextField6.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jTextField6FocusGained(evt);
+            }
             public void focusLost(java.awt.event.FocusEvent evt) {
                 jTextField6FocusLost(evt);
             }
@@ -340,16 +343,21 @@ public class note extends javax.swing.JFrame implements DB{
     }                                        
 //Button Modifier 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-     idST=JOptionPane.showInputDialog(this, "entrée votre ID","controle d'accée",JOptionPane.QUESTION_MESSAGE);
-      Model4=(DefaultTableModel) jTable1.getModel();
+     Model4=(DefaultTableModel) jTable1.getModel();
       Model4.setRowCount(0);
       ArrayList <String > data=LireDB("Note");
+ 
+      if(data.contains(idST)){
+          ModifyDB("Note");
+      }
+     if(idST.equals("")){
+      IDste=JOptionPane.showInputDialog(this, "entrée votre ID","controle d'accée",JOptionPane.QUESTION_MESSAGE);
      
     //System.out.println(data);
     
-    if(data.contains(idST)){
+    if(data.contains(IDste)){
        ModifyDB("Note");
-    }
+    }}
     
     
         
@@ -443,8 +451,8 @@ public class note extends javax.swing.JFrame implements DB{
         jTextField4.setText("");
         jTextField6.setText("");
       // jComboBox1.setSelectedIndex(0);
-        Model4.setRowCount(0);
-        LireDB("note");
+        
+        ArrayList<String> data =LireDB("Note");
     }                                        
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {                                            
@@ -491,9 +499,16 @@ public class note extends javax.swing.JFrame implements DB{
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {                                     
         // TODO add your handling code here:
-         IndexRow =jTable1.getSelectedRow();
-         idST =String.valueOf(Model.getValueAt(IndexRow, 0));
+        Model6=(DefaultTableModel)jTable1.getModel();
+        IndexRow =jTable1.getSelectedRow();
+        idST =String.valueOf(Model6.getValueAt(IndexRow, 0));
     }                                    
+
+    private void jTextField6FocusGained(java.awt.event.FocusEvent evt) {                                        
+        // TODO add your handling code here:
+       note=jTextField6.getText();
+
+    }                                       
 
     /**
      * @param args the command line arguments
@@ -534,6 +549,7 @@ public class note extends javax.swing.JFrame implements DB{
  String Branch;
  String NomET;
  int IndexRow;
+ String IDste;
 
     @Override
     public Connection connectionDB(String TableName) {
@@ -560,6 +576,7 @@ public class note extends javax.swing.JFrame implements DB{
             String data[]=new String [5];
 
         Model2=(DefaultTableModel) jTable1.getModel();
+        Model2.setRowCount(0);
          try{ 
         String l="select * from "+TableName;
           Cnx=connectionDB("Note");
@@ -677,7 +694,7 @@ public void  ModifyDB(String TableName){
     
     try{
              Cnx=connectionDB("Note");
-             String sql ="select * from "+TableName+" where idst="+"\""+idST+"\"";
+             String sql ="select * from "+TableName+" where idst in ( "+"\""+IDste+"\""+","+"\""+idST+"\" )";
              CreatST=Cnx.createStatement();
              Result=CreatST.executeQuery(sql);
             
