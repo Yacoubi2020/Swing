@@ -446,6 +446,7 @@ public class note extends javax.swing.JFrame implements DB{
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         // TODO add your handling code here:
+        jTextField2.setEditable(true);
         jTextField2.setText("");
         jTextField3.setText("");
         jTextField4.setText("");
